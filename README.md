@@ -10,8 +10,7 @@ Built with **FastAPI** and **Django** on the backend and a **React-based** front
 ### Backend:
 - **FastAPI** & **Django** - High-performance API development  
 - **PostgreSQL & Microsoft SQL Server** - Secure and efficient database management  
-- **JWT Authentication & MFA** - Ensuring secure access control  
-- **Terraform & GitHub Actions** - Automating deployment and CI/CD  
+- **JWT Authentication & MFA** - Ensuring secure access control
 
 ### Frontend:
 - **React** - Interactive and user-friendly UI  
@@ -19,14 +18,12 @@ Built with **FastAPI** and **Django** on the backend and a **React-based** front
 
 ### Infrastructure & Observability:
 - **AWS (EC2, S3, API Gateway, Lambda)** - Scalable cloud hosting  
-- **Grafana & Prometheus** - Real-time monitoring and performance insights  
+
 
 ## ✨ Features  
 ✅ **Automated Student Data Sync** - Batch processing & real-time updates for F-1/J-1 visa records  
 ✅ **Secure Access & Authentication** - MFA & Role-Based Access Control (RBAC)  
-✅ **Interactive UI** - Streamlined student workflows with an intuitive React-based frontend  
-✅ **CI/CD Pipelines** - Infrastructure as Code (IaC) via Terraform & GitHub Actions  
-✅ **Observability & Monitoring** - Real-time insights using Grafana & Prometheus  
+✅ **Interactive UI** - Streamlined student workflows with an intuitive React-based frontend
 
 ## 📦 Installation & Setup  
 1. **Clone the repository:**  
@@ -55,9 +52,6 @@ Built with **FastAPI** and **Django** on the backend and a **React-based** front
 - **Admin Dashboard:** Manage student records, process visa requests, and monitor system activity.  
 - **Student Portal:** Students can update their information, check visa status, and receive notifications.  
 - **API Endpoints:** RESTful APIs to fetch, update, and validate student data.  
-
-## 🛠️ Contributing  
-🚀 Contributions are welcome! If you find a bug or have feature suggestions, feel free to open an issue or submit a pull request.  
 
 ## 📜 License  
 This project is licensed under the **MIT License**.  
