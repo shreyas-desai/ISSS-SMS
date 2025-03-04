@@ -1,0 +1,55 @@
+<!-- templates/add_student.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="max-w-lg w-full bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Add Student</h1>
+
+        <form method="POST" action="{% url 'add_bulk_records' %}" class="space-y-4" enctype="multipart/form-data">
+            <!-- <input id="records-file" type="file" accept=".csv,.xlsx,.xls"
+                class="w-full bg-blue-300 text-white py-2 rounded hover:bg-blue-600"> -->
+                {{ file_form.as_p }}
+
+            <button id="submit" type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                Upload .csv
+            </button>
+        </form>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // $("#submit").click(function (e) {
+    //     e.preventDefault();
+    //     const form = document.querySelector('form');
+    //     const formData = new FormData(form);
+    //     console.log(formData)
+    // })
+
+    // form.addEventListener('submit', (event) => {
+    //     event.preventDefault();
+
+
+    //     fetch('/upload/', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //         .then(response => {
+    //             // Handle response from Django
+    //         })
+    //         .catch(error => {
+    //             // Handle errors
+    //         });
+    // });
+</script>
+
+</html>

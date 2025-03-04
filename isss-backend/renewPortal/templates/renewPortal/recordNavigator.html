@@ -1,0 +1,185 @@
+<!-- templates/record_navigator.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Navigator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 p-10">
+    <div class="mx-auto bg-white shadow-md rounded-lg p-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Record Navigator</h1>
+        <div>
+            <div class="mb-6">
+                <div class="flex items-center space-x-4">
+                    <input type="text" id="search_text" name="query" placeholder="Search records..."
+                        class="flex-grow border border-gray-300 rounded py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+                        required>
+                    <select id="field" name="field" class="border border-gray-300 rounded py-2 px-3 text-gray-700">
+                        <option value="first_name">First Name</option>
+                        <option value="last_name">Last Name</option>
+                        <option value="cwid">CWID</option>
+                        <option value="sevis_id">Sevis ID</option>
+                        <!-- <option value="email">Email</option> -->
+                    </select>
+                    <button id="submit"
+                        class="bg-blue-500 text-white font-semibold py-2 px-6 rounded hover:bg-blue-600">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Records:</h2>
+            <!-- <ul id="student_records" class="space-y-4">
+                <p class="text-gray-500">No records found.</p>
+            </ul> -->
+            <!-- <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8"> -->
+            <!-- <h1 class="text-3xl font-bold text-center mb-8">Record Navigator</h1> -->
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3 border-b font-semibold">Student Name </th>
+                        <th class="p-3 border-b font-semibold">CWID</th>
+                        <th class="p-3 border-b font-semibold">Sevis ID</th>
+                        <th class="p-3 border-b font-semibold">Sevis Status</th>
+                        <th class="p-3 border-b font-semibold">Gender</th>
+                        <th class="p-3 border-b font-semibold">Email</th>
+                        <th class="p-3 border-b font-semibold">Portal Access</th>
+                        <th class="p-3 border-b font-semibold">Single Sign-On</th>
+                        <th class="p-3 border-b font-semibold">Stage Status</th>
+                    </tr>
+                </thead>
+                <tbody id="student_records" class="text-gray-700">
+                    <tr>
+                        <div id="loading" class="text-center text-gray-500 hidden">
+                            <p>Loading records...</p>
+                        </div>
+                        <!-- <td colspan="3" class="p-4 text-center text-gray-500">No records found.</td> -->
+                    </tr>
+                </tbody>
+                
+                
+            </table>
+            <div class="p-4 flex items-center justify-between text-gray-500">
+                <input id="hidden-prev" type="hidden" value="">
+                <input id="hidden-next" type="hidden" value="">
+                <button id="previous"
+                    class="py-2 px-4 rounded-md bg-blue-200 text-xs font-semibold disabled:opacity-100 disabled:cursor-not-allowed">
+                    Prev
+                </button>
+                <div id="pages" class="flex items-center gap-2 text-sm">
+                </div>
+                <button id="next"
+                    class="py-2 px-4 rounded-md bg-blue-200 text-xs font-semibold disabled:opacity-100 disabled:cursor-not-allowed">
+                    Next
+                </button>
+            </div>
+            <!-- </div> -->
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+        function loadResults(query = "", page = 1) {
+                console.clear();
+                let field = $('#field').val();
+                $("#loading").removeClass("hidden");
+                jQuery.ajax({
+                    url: `/portal/api/record-navigator/?query=${query}&page=${page}&field=${field}`, success: function (data) {
+                        console.log(data.data)
+                        $("#loading").addClass("hidden");
+                        $("#student_records").html("");
+                        $("#hidden-next").val(data.next_page)
+                        $("#hidden-prev").val(data.prev_page)
+                        $("#pages").html("");
+                        let start = data.prev_page ? data.prev_page : page;
+                        let end = data.next_page ? data.next_page : page;
+                        if (!data.next_page && data.prev_page != 1) start = start - 1
+                        if (!data.prev_page && data.next_page != data.total_pages) end = end + 1
+                        console.log(start, end);
+                        let result = data.data;
+                        if (!data.prev_page) {
+                            $("#previous").attr("disabled", true);
+                        } else {
+                            $("#previous").removeAttr("disabled");
+                        }
+
+                        if (!data.next_page) {
+                            $("#next").attr("disabled", true);
+                        } else {
+                            $("#next").removeAttr("disabled");
+                        }
+
+                        if (result.length === 0) {
+                            $("#student_records").html("<p class='text-gray-500'>No records found.</p>");
+                        } else {
+                            result.forEach(function (record) {
+                                let row = `
+                                <tr class="hover:bg-gray-100">
+                                    <td class="p-3 border-b">
+                                        <a href="/portal/record-detail/${record.id}/" class="text-blue-500 hover:underline font-semibold">
+                                            ${record.full_name}
+                                        </a>
+                                    </td>
+                                    <td class="p-3 border-b">${record.cwid}</td>
+                                    <td class="p-3 border-b">${record.sevis_id}</td>
+                                    <td class="p-3 border-b">${record.profile_status?"Active":"Inactive"}</td>
+                                    <td class="p-3 border-b">${record.gender=="M"?"Male":"Female"}</td>
+                                    <td class="p-3 border-b">${record.email}</td>
+                                    <td class="p-3 border-b">${record.portal_access?"Yes":"No"}</td>
+                                    <td class="p-3 border-b">${record.sso?"Yes":"No"}</td>
+                                    <td class="p-3 border-b">${record.stage_status}</td>
+                                </tr>
+                            `;
+                                $("#student_records").append(row);
+                            });
+                        }
+                        if (data.total_pages > 1) {
+
+                            for (let i = start; i <= end; i++) {
+                                if (page == i) {
+                                    $("#pages").append(`<button class="px-2 rounded-sm bg-gray-100">${i}</button>`)
+                                }
+                                else {
+                                    $("#pages").append(`<button class="px-2 rounded-sm">${i}</button>`)
+                                }
+                            }
+
+                        }
+                    }
+                });
+            }
+            $("#submit").click(function () {
+                let search_text = $('#search_text').val();
+                loadResults(query = search_text, page = 1);
+            });
+            $("#next").click(function () {
+                let next = $("#hidden-next").val()
+                if (next) {
+                    let search_text = $('#search_text').val();
+                    loadResults(query = search_text, page = parseInt(next));
+                }
+            });
+            $("#previous").click(function () {
+                let prev = $("#hidden-prev").val()
+                if (prev) {
+                    let search_text = $('#search_text').val();
+                    loadResults(query = search_text, page = parseInt(prev));
+                }
+            });
+            $('#search_text').on('keypress', function (e) {
+                if (e.which == 13) { // Enter key
+                    $('#submit').click();
+                }
+            });
+            loadResults()
+
+        </script>
+</body>
+
+</html>

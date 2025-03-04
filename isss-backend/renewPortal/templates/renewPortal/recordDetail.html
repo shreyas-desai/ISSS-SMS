@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 p-10">
+    <div>
+        <div class="mb-6">
+            <div class="flex items-center space-x-4">
+                <input type="text" id="search_text" name="query" placeholder="Search records..."
+                    class="flex-grow border border-gray-300 rounded py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+                    required>
+                <select id="field" name="field" class="border border-gray-300 rounded py-2 px-3 text-gray-700">
+                    <option value="first_name">First Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="cwid">CWID</option>
+                    <option value="sevis_id">Sevis ID</option>
+                    <option value="email">Email</option>
+                </select>
+                <button id="submit" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded hover:bg-blue-600">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="record-detail" class="mx-auto bg-white shadow-md rounded-lg p-8">
+
+        <h1 class="text-3xl font-bold mb-4">{{ record.first_name }} {{ record.last_name }}</h1>
+
+        <div class="flex items-center bg-gray-100 p-4 rounded mb-6">
+            <div class="w-1/2">
+                <p><strong>CWID:</strong> {{ record.cwid }}</p>
+                <p><strong>Sevis ID:</strong> {{ record.sevis_id }}</p>
+            </div>
+            <div class="w-1/2">
+                <p><strong>Profile Status:</strong> SEVIS -{% if record.profile_status %} Active {% else %} Inactive {% endif %}</p>
+                <p><strong>Profile Type:</strong> {{ record.profile_type }}</p>
+            </div>
+        </div>
+
+        <!-- Tabs navigation -->
+        <div class="flex border-b mb-6">
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="quickview">QuickView</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="bio">Bio</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="address">Address</button>
+            <!-- <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="emails">Emails</button> -->
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="dependents">Dependents</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="contacts">Contacts</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="profiles">Profiles</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="work-auths">Work Authorizations</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="custom">Custom</button>
+            <!-- <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="forms">Forms</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="sevis">Sevis</button> -->
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="documents">Documents</button>
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="interactions">Interactions</button>
+            <!-- <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="portal">Portal</button> -->
+            <button
+                class="tab-button py-2 px-4 text-blue-500 hover:text-blue-700 border-b-2 border-transparent focus:outline-none"
+                data-tab="notes">Notes</button> 
+        </div>
+
+        <!-- Tab content -->
+        <div id="quickview" class="tab-content">
+            <!-- <h2 class="text-2xl font-semibold mb-4">QuickView</h2> -->
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>DOB:</strong> {{ record.date_of_birth }}</p>
+                        <p><strong>Gender:</strong> {{ record.get_gender_display }}</p>
+                        <p><strong>Country of Citizenship:</strong> {{ record.get_country_of_citizenship_display }}</p>
+                        <p><strong>Country of Birth:</strong> {{ record.get_country_of_birth_display }}</p>
+                        <p><strong>Create Date:</strong> {{ record.create_date }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>SSN:</strong> {{ record.ssn }}</p>
+                        <p><strong>Marital Status:</strong> {{ record.get_marital_status_display }}</p>
+                        <!-- <p><strong>CWID:</strong> {{ record.cwid }}</p> -->
+                        <p><strong>Country of Residence:</strong> {{ record.get_country_of_residence_display }}</p>
+                        <p><strong>City of Birth:</strong> {{ record.city_of_birth }}</p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Profile Data</h4>
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Profile Type:</strong> {{ profile.profile_type }}</p>
+                        <p><strong>Profile Status:</strong> {{ profile.profile_status }}</p>
+                        <p><strong>Start Date:</strong> {{ profile.start_date }}</p>
+                        <p><strong>School:</strong> {{ profile.get_academic_dept_display }} </p>
+                        <!-- <p><strong>Level of Education:</strong> {{ record.level_of_education }}</p> -->
+                        <p><strong>Full-Time Status:</strong> {{ record.get_full_time_status_display }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Profile Subtype:</strong> {{ profile.profile_sub_type }}</p>
+                        <p><strong>Visa Sponsorshp:</strong> {{ profile.sponsorship }}</p>
+                        <p><strong>End Date:</strong> {{ profile.end_date }}</p>
+                        <p><strong>Academic Department:</strong> {{ profile.get_academic_dept_display }}</p>
+                        <p><strong>Major:</strong> {{ profile.get_major_display }}</p>
+                        <p><strong>Job Title:</strong> {{ record.city_of_birth }}</p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Immigration Form</h4>
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Form Type:</strong> {{ record.profile_type }}</p>
+                        <p><strong>Date Begins:</strong> {{ record.profile_status }}</p>
+                        <p><strong>School:</strong> {{ record.start_date }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Form Description:</strong> {{ profile.profile_sub_type }}</p>
+                        <p><strong>Date Expires:</strong> </p>
+                        <p><strong>Date Issued:</strong> {{ profile.end_date }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bio" class="tab-content hidden">
+            <h4 class="text-xl font-semibold mb-4">Name</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Surname/Primary Name:</strong> {{ record.last_name }}</p>
+                        <p><strong>First/Given Name:</strong> {{ record.first_name }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Middle Name:</strong> {{ record.middle_name }}</p>
+                        <p><strong>Suffix:</strong> {{record.passport_name_suffix}} </p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Preferred Name</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Preferred Surname/Primary Name:</strong> {{ record.preferred_last_name }}</p>
+                        <p><strong>Preferred First/Given Name:</strong> {{ record.preferred_first_name }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Preferred Middle Name:</strong> {{ record.preferred_middle_name }}</p>
+                        <p><strong>Preferred Suffix:</strong> {{record.preferred_name_suffix}} </p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Passport Name</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Passport Primary Name:</strong> {{ record.passport_last_name }}</p>
+                        <p><strong>Passport Name:</strong> {{ record.passport_name }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>MRZ Display:</strong> {{ record.profile_sub_type }}</p>
+
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Sevis</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>SEVIS ID:</strong> {{ record.sevis_id }}</p>
+                        <p><strong>First/Given Name:</strong> {{ record.first_name }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Middle Name:</strong> {{ record.middle_name }}</p>
+                        <!-- <p></p> -->
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">fasATLAS Settings</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Campus ID:</strong> {{ record.cwid }}</p>
+                        <p><strong>Database Status:</strong> {{ record.db_status }}</p>
+                        <p><strong>DataLink Active:</strong> {{ record.data_link }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Admissions ID:</strong> {{ record.profile_sub_type }}</p>
+                        <p><strong>Department:</strong> {{ record.department }}</p>
+                        <p><strong>E-mail Alerts Suppressed:</strong> {{ record.email_alerts }}</p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-xl font-semibold mb-4">Biographical Information</h4>
+
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>Date of Birth:</strong> {{ record.date_of_birth }}</p>
+                        <p><strong>Country of Birth:</strong> {{ record.get_country_of_birth_display }}</p>
+                        <p><strong>Citizenship Status:</strong> {{ record.citizenship_status }}</p>
+                        <p><strong>Country of Citizenship:</strong> {{ record.get_country_of_citizenship_display }}</p>
+                        <p><strong>Country of Legal Permanent Residence:</strong> {{ record.get_country_of_residence_display }}</p>
+                        <p><strong>Tax ID:</strong> {{ record.tax_id }}</p>
+                        <p><strong>Drivers License Number:</strong> {{ record.drivers_license_no }}</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 px-4 mb-4">
+                    <div class="bg-gray-50 p-4 rounded shadow-sm">
+                        <p><strong>City of Birth:</strong> {{ record.city_of_birth }}</p>
+                        <p><strong>Birth Country Reason:</strong> {{ record.country_of_birth_reason }}</p>
+                        <p><strong>Marital Status:</strong> {{ record.get_marital_status }}</p>
+                        <p><strong>Gender:</strong> {{ record.get_gender_display }}</p>
+                        <p><strong>Social Security Number:</strong> {{ record.ssn }}</p>
+                        <p><strong>Drivers License State:</strong> {{ record.drivers_license_state }}</p>
+                        <!-- <p><strong>Drivers License Number:</strong> {{ record.profile_status }}</p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="address" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Address</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleAddAddressForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add Address
+                </button>
+            </div>
+            <div id="addAddressFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_address' record.id %}">
+                    {% csrf_token %}
+                    {{ add_address_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Address
+                    </button>
+                </form>
+            </div>
+
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Address Type</th>
+                            <th class="py-3 px-6 text-left">Street</th>
+                            <th class="py-3 px-6 text-left">City</th>
+                            <th class="py-3 px-6 text-left">State</th>
+                            <th class="py-3 px-6 text-left">Country</th>
+                            <th class="py-3 px-6 text-left">Zip Code</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for address in addresses %}
+                        <tr class="bg-gray-50 border-b border-gray-200 hover:bg-gray-100">
+                            <!-- Address Type -->
+                            <td class="py-3 px-6 text-left">
+                                <div id="address-type-readonly-{{address.id}}">
+                                    {{ address.get_address_type_display }}
+                                </div>
+                                <div id="address-type-edit-{{address.id}}" class="hidden">
+                                    <select name="address-type-{{address.id}}" id="address-type-{{address.id}}">
+                                        {% for a in address_types %}
+                                        <option value="{{a.0}}" {% if a.0 == address.address_type %}selected{% endif %}>
+                                            {{ a.1 }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </td>
+            
+                            <!-- Street -->
+                            <td class="py-3 px-6 text-left">
+                                <input type="text" name="street-{{address.id}}" value="{{ address.street }}" readonly
+                                    class="bg-transparent border-none w-full">
+                            </td>
+            
+                            <!-- City -->
+                            <td class="py-3 px-6 text-left">
+                                <input type="text" name="city-{{address.id}}" value="{{ address.city }}" readonly
+                                    class="bg-transparent border-none w-full">
+                            </td>
+            
+                            <!-- State -->
+                            <td class="py-3 px-6 text-left">
+                                <input type="text" name="state-{{address.id}}" value="{{ address.state }}" readonly
+                                    class="bg-transparent border-none w-full">
+                            </td>
+            
+                            <!-- Country -->
+                            <td class="py-3 px-6 text-left">
+                                <div id="country-readonly-{{address.id}}">
+                                    {{ address.get_country_display }}
+                                </div>
+                                <div id="country-edit-{{address.id}}" class="hidden">
+                                    <select name="country-{{address.id}}" id="country-id-{{address.id}}">
+                                        {% for a in countries %}
+                                        <option value="{{a.0}}" {% if a.0 == address.country %}selected{% endif %}>
+                                            {{ a.1 }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </td>
+            
+                            <!-- Zip Code -->
+                            <td class="py-3 px-6 text-left">
+                                <input type="text" name="zip-code-{{address.id}}" value="{{ address.zip_code }}" readonly
+                                    class="bg-transparent border-none w-full">
+                            </td>
+                            
+            
+                            <!-- Actions -->
+                            <td class="py-3 px-6 text-center">
+                                <button id="edit-btn-{{ address.id }}"
+                                    class="edit-info-btn bg-yellow-500 text-white px-4 py-2 rounded">
+                                    Edit Info
+                                </button>
+                                <button type="submit"
+                                    class="save-btn hidden bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                                    Save
+                                </button>
+                            </td>
+                            <td>
+                                <input type="hidden" name="student-address-{{ address.id }}" value="{{ address.student_address.id }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr class="my-6">
+        </div>
+
+        <div id="emails" class="tab-content hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Email Address</th>
+                            <th class="py-3 px-6 text-left">Email Type</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for email in emails %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 font-bold text-left">{{ email.email_address }}</td>
+                            <td class="py-3 px-6 text-left">{{ email.get_email_type_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+
+        </div>
+
+        <div id="dependents" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Dependents</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleDependentForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add Dependents
+                </button>
+            </div>
+            <div id="addDependentFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_dependent' record.id %}">
+                    {% csrf_token %}
+                    {{ add_dependent_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Dependent
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">First Name</th>
+                            <th class="py-3 px-6 text-left">Last Name</th>
+                            <th class="py-3 px-6 text-left">Date of Birth</th>
+                            <th class="py-3 px-6 text-left">Country of Birth</th>
+                            <th class="py-3 px-6 text-left">Relationship</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for dependent in dependents %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 font-bold text-left">{{ dependent.first_name }}</td>
+                            <td class="py-3 px-6 font-bold text-left">{{ dependent.last_name }}</td>
+                            <td class="py-3 px-6 font-bold text-left">{{ dependent.date_of_birth }}</td>
+                            <td class="py-3 px-6 font-bold text-left">{{ dependent.get_country_of_birth_display }}</td>
+                            <td class="py-3 px-6 font-bold text-left">{{ dependent.relationship }}</td>
+                            <td class="py-3 px-6 text-left">
+                                {% if dependent.status %}
+                                    <span class="text-green-500 font-semibold">Active</span>
+                                {% else %}
+                                    <span class="text-red-500 font-semibold">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+
+        <div id="contacts" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Contacts</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleContactForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add Contact
+                </button>
+            </div>
+            <div id="addContactFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_contact' record.id %}">
+                    {% csrf_token %}
+                    {{ add_contact_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Contact
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Contact Type</th>
+                            <th class="py-3 px-6 text-left">Name</th>
+                            <th class="py-3 px-6 text-left">Address</th>
+                            <th class="py-3 px-6 text-left">Phone No.:</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for contact in contacts %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 font-bold text-left">{{ contact.get_contact_type_display }}</td>
+                                <td class="py-3 px-6 font-bold text-left">{{ contact.name }}</td>
+                                <td class="py-3 px-6 font-bold text-left">{{ contact.address }}</td>
+                                <td class="py-3 px-6 font-bold text-left">{{ contact.phone_no }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="profiles" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Profiles</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleProfileForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add Profile
+                </button>
+            </div>
+            <div id="addProfileFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_profile' record.id %}" enctype="multipart/form-data">
+                    <!-- {% csrf_token %} -->
+                    {{ add_profile_form.as_p }}
+                    {{ add_document_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Profile
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Basic Info</th>
+                            <th class="py-3 px-6 text-left">Program Dates</th>
+                            <th class="py-3 px-6 text-left">Program Info</th>
+                            <th class="py-3 px-6 text-left">Documents</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for profile in profiles %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 font-bold text-left">Profile Type: {{ profile.profile_type }} <br/>
+                                Profile Status: SEVIS {% if profile.profile_status %}
+                                            <span class="font-bold">Active</span>
+                                            {% else %}
+                                                <span class="font-bold">Inactive</span>
+                                            {% endif %}
+                                            <br/>Profile Substatus: {{ profile.sub_status }}<br/>
+                                        Sponsorship: {{ profile.sponsorship }} <br/>
+                                        Current Profile: {{ profile.current_profile }} </td>
+                                <td class="py-3 px-6 font-bold text-left">Start Date: {{ profile.start_date }}<br/>End Date: {{ profile.end_date }}</td>
+                                <td class="py-3 px-6 font-bold text-left">Major: {{ profile.get_major_display }}<br/> Education Level: {{record.level_of_education}}</td>
+                                <td class="py-3 px-6 font-bold text-left">
+                                    {% for document in profile.documents.all %}
+                                        {% if document.doc_file.url %}
+                                        <a href="{{ document.doc_file.url }}" target="_blank"> {{document.name}}</a><br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="work-auths" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Work Authorizations</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleWorkAuthForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add New Work Authorization
+                </button>
+            </div>
+            <div id="addWorkAuthFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_work_auth' record.id %}" enctype="multipart/form-data">
+                    <!-- {% csrf_token %} -->
+                    {{ add_work_auth_form.as_p }}
+                    {{ add_work_auth_doc_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Work Authorization
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Type</th>
+                            <th class="py-3 px-6 text-left">Start Date</th>
+                            <th class="py-3 px-6 text-left">End Date</th>
+                            <th class="py-3 px-6 text-left">Request Status</th>
+                            <th class="py-3 px-6 text-left">Full/Part Time</th>
+                            <th class="py-3 px-6 text-left">Work Months</th>
+                            <th class="py-3 px-6 text-left">Documents</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for work_auth in work_auths %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.get_auth_type_display }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.start_date }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.end_date }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.get_request_status_display }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.get_time_type_display }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ work_auth.work_months }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> 
+                                        {% for document in work_auth.auth_documents.all %}
+                                            {% if document.doc_file.url %}
+                                                <a href="{{ document.doc_file.url }}" target="_blank"> {{ document.name }} </a><br/>
+                                            {% endif %}
+                                        {% endfor %} 
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+
+        <div id="custom" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Custom</h2>
+        </div>
+
+        <!-- <div id="forms" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Forms</h2>
+            <p><strong>Forms</strong> </p>
+        </div>
+
+        <div id="sevis" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Sevis</h2>
+            <p><strong>Sevis</strong> </p>
+        </div> -->
+
+        <div id="documents" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Documents</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleDocumentsForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add New Document
+                </button>
+            </div>
+            <div id="addDocumentFormContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_document' record.id %}" enctype="multipart/form-data">
+                    {{ add_student_document_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Document
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Title</th>
+                            <th class="py-3 px-6 text-left">File Name</th>
+                            <th class="py-3 px-6 text-left">Keywords</th>
+                            <th class="py-3 px-6 text-left">Last Updated</th>
+                            <th class="py-3 px-6 text-left">Updated By</th>
+                            <th class="py-3 px-6 text-left">Context Type</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for doc in stud_docs.all %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 font-bold text-left"> 
+                                    {% if doc.doc_file %}
+                                        <a href="{{ doc.doc_file.url }}" target="_blank"> {{ doc.title }} </a><br/>
+                                    {% endif %} 
+                                </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ doc.doc_file }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ doc.keywords }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ doc.uploaded_at }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ doc.uploaded_by }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ doc.get_context_display }} </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="interactions" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Interactions</h2>
+            <div class="flex justify-center mb-4">
+                <button id="toggleInteractionsForm" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Add New Interactions
+                </button>
+            </div>
+            <div id="addInteractionsContainer" class="hidden mb-6">
+                <form method="POST" action="{% url 'add_interactions' record.id %}">
+                    {{ add_interactions_form.as_p }}
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit Interactions
+                    </button>
+                </form>
+            </div>
+            <hr class="my-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Type</th>
+                            <th class="py-3 px-6 text-left">Date</th>
+                            <th class="py-3 px-6 text-left">Advisor</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                            <th class="py-3 px-6 text-left">Category</th>
+                            <th class="py-3 px-6 text-left">Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for interactions in interactions.all %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 font-bold text-left">{{ interactions.interaction_type }}</td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ interactions.date }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ interactions.advisor }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ interactions.status }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ interactions.category }} </td>
+                                <td class="py-3 px-6 font-bold text-left"> {{ interactions.summary }} </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="notes" class="tab-content hidden">
+            <h2 class="text-2xl font-semibold mb-4">Notes</h2>
+            <p><strong>Notes</strong> </p>
+        </div>
+        
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden'); // Hide all contents
+                });
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('border-blue-500'); // Reset all buttons
+                });
+                document.getElementById(button.dataset.tab).classList.remove('hidden'); // Show selected tab content
+                button.classList.add('border-blue-500'); // Highlight active tab
+            });
+        });
+
+        // Initially display the first tab
+        document.querySelector('.tab-button').click();
+
+
+        function loadResults(query = "", page = 1) {
+            $("#record-detail").html("");
+            console.clear();
+            let field = $('#field').val();
+            jQuery.ajax({
+                url: `/portal/api/record-navigator/?query=${query}&page=${page}&field=${field}`, success: function (data) {
+                    console.log(data)
+                    $("#student_records").html("");
+                    $("#hidden-next").val(data.next_page)
+                    $("#hidden-prev").val(data.prev_page)
+                    $("#pages").html("");
+                    let start = data.prev_page ? data.prev_page : page;
+                    let end = data.next_page ? data.next_page : page;
+                    if (!data.next_page && data.prev_page != 1) start = start - 1
+                    if (!data.prev_page && data.next_page != data.total_pages) end = end + 1
+                    console.log(start, end);
+                    let result = data.data;
+                    if (!data.prev_page) {
+                        $("#previous").attr("disabled", true);
+                    } else {
+                        $("#previous").removeAttr("disabled");
+                    }
+                    if (!data.next_page) {
+                        $("#next").attr("disabled", true);
+                    } else {
+                        $("#next").removeAttr("disabled");
+                    }
+                    if (result.length === 0) {
+                        $("#record-detail").html("<ul class='space-y-4'><p class='text-gray-500'>No records found.</p></ul>");
+                    } else {
+                        result.forEach(function (arrayItem) {
+                            let first_name = (arrayItem.first_name) ? arrayItem.first_name.toString() : "";
+                            let last_name = (arrayItem.last_name) ? arrayItem.last_name.toString() : "";
+                            let cwid = (arrayItem.cwid) ? arrayItem.cwid.toString() : "";
+                            $("#record-detail").append(`<ul class="space-y-4"><li class="bg-gray-100 p-4 rounded shadow-sm"><a href="/portal/record-detail/${arrayItem.id}/" class="block font-bold text-blue-500 hover:underline">${first_name} ${last_name}</a><p>${cwid}</p></li></ul>`);
+                        });
+                    }
+                    if (data.total_pages > 1) {
+
+                        for (let i = start; i <= end; i++) {
+                            if (page == i) {
+                                $("#pages").append(`<button class="px-2 rounded-sm bg-gray-100">${i}</button>`)
+                            }
+                            else {
+                                $("#pages").append(`<button class="px-2 rounded-sm">${i}</button>`)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        $("#submit").click(function () {
+            let search_text = $('#search_text').val();
+            loadResults(query = search_text, page = 1);
+        });
+        $('#search_text').on('keypress', function (e) {
+            if (e.which == 13) { // Enter key
+                $('#submit').click();
+            }
+        });
+        // loadResults()
+        const editButtons = document.querySelectorAll(".edit-info-btn");
+
+        editButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const card = button.closest(".bg-gray-50");
+                const inputs = card.querySelectorAll("input, select");
+                const saveButton = card.querySelector(".save-btn");
+                const address_id = button.id.replace('edit-btn-', "")
+                $('#address-type-readonly-' + address_id).toggle("hidden");
+                $('#address-type-edit-' + address_id).toggle("hidden");
+                $('#country-readonly-' + address_id).toggle("hidden");
+                $('#country-edit-' + address_id).toggle("hidden");
+
+                inputs.forEach((input) => {
+                    if (input.hasAttribute("readonly") || input.hasAttribute("disabled")) {
+                        input.removeAttribute("readonly");
+                        input.removeAttribute("disabled");
+                        input.classList.add("bg-white", "border", "p-1", "rounded");
+                    } else {
+                        input.classList.remove("bg-white", "border", "p-1", "rounded");
+                    }
+                });
+
+                saveButton.classList.toggle("hidden");
+            });
+        });
+        $(document).on('click', '.save-btn', function (e) {
+            e.preventDefault();
+            // Find the parent row (tr) of the Save button
+            const row = $(this).closest('tr');
+            const address_id = $(this).closest('tr').find('.edit-info-btn').attr('id').replace('edit-btn-', '');
+
+            // Collect data from the inputs and selects within the row
+            const data = {
+                student_address: row.find('input[name^="student-address"]').val(), // Get the student_address field
+                address_type: row.find('select[name^="address-type"]').val(),
+                street: row.find('input[name^="street"]').val(),
+                city: row.find('input[name^="city"]').val(),
+                state: row.find('input[name^="state"]').val(),
+                country: row.find('select[name^="country"]').val(),
+                zip_code: row.find('input[name^="zip-code"]').val(),
+            };
+
+            // Send the updated data via AJAX
+            $.ajax({
+                type: "PUT",
+                url: '/portal/edit-address/' + parseInt(address_id) + "/",
+                data: data,
+                success: function (response) {
+                    $('#address-type-readonly-' + address_id).html(response.address_type)
+                    $('#country-readonly-' + address_id).html(response.country)
+                    $('#edit-btn-' + address_id).click()
+                },
+                error: function (error) {
+                    console.log('An error occurred:', error);
+                },
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Event listener for Address form
+            const toggleAddressButton = document.getElementById("toggleAddAddressForm");
+            const addressFormContainer = document.getElementById("addAddressFormContainer");
+
+            if (toggleAddressButton && addressFormContainer) {
+                toggleAddressButton.addEventListener("click", function () {
+                    if (addressFormContainer.classList.contains("hidden")) {
+                        addressFormContainer.classList.remove("hidden");
+                    } else {
+                        addressFormContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            // Event listener for Dependents form
+            const toggleDependentButton = document.getElementById("toggleDependentForm");
+            const dependentFormContainer = document.getElementById("addDependentFormContainer");
+
+            if (toggleDependentButton && dependentFormContainer) {
+                toggleDependentButton.addEventListener("click", function () {
+                    if (dependentFormContainer.classList.contains("hidden")) {
+                        dependentFormContainer.classList.remove("hidden");
+                    } else {
+                        dependentFormContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            // Event listener for Contacts form
+            const toggleContactButton = document.getElementById("toggleContactForm");
+            const contactFormContainer = document.getElementById("addContactFormContainer");
+            
+            if (toggleContactButton && contactFormContainer) {
+                toggleContactButton.addEventListener("click", function () {
+                    if (contactFormContainer.classList.contains("hidden")) {
+                        contactFormContainer.classList.remove("hidden");
+                    } else {
+                        contactFormContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            const toggleWorkAuthForm = document.getElementById("toggleWorkAuthForm");
+            const WorkAuthFormContainer = document.getElementById("addWorkAuthFormContainer");
+            
+            if (toggleWorkAuthForm && WorkAuthFormContainer) {
+                toggleWorkAuthForm.addEventListener("click", function () {
+                    if (WorkAuthFormContainer.classList.contains("hidden")) {
+                        WorkAuthFormContainer.classList.remove("hidden");
+                    } else {
+                        WorkAuthFormContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            const toggleProfileButton = document.getElementById("toggleProfileForm");
+            const ProfileFormContainer = document.getElementById("addProfileFormContainer");
+            
+            if (toggleProfileButton && ProfileFormContainer) {
+                toggleProfileButton.addEventListener("click", function () {
+                    if (ProfileFormContainer.classList.contains("hidden")) {
+                        ProfileFormContainer.classList.remove("hidden");
+                    } else {
+                        ProfileFormContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            const toggleDocumentsButton = document.getElementById("toggleDocumentsForm");
+            const StudentDocumentsContainer = document.getElementById("addDocumentFormContainer");
+            
+            if (toggleDocumentsButton && StudentDocumentsContainer) {
+                toggleDocumentsButton.addEventListener("click", function () {
+                    if (StudentDocumentsContainer.classList.contains("hidden")) {
+                        StudentDocumentsContainer.classList.remove("hidden");
+                    } else {
+                        StudentDocumentsContainer.classList.add("hidden");
+                    }
+                });
+            }
+
+            const toggleInteractionsButton = document.getElementById("toggleInteractionsForm");
+            const InteractionsContainer = document.getElementById("addInteractionsContainer");
+            
+            if (toggleInteractionsButton && InteractionsContainer) {
+                toggleInteractionsButton.addEventListener("click", function () {
+                    if (InteractionsContainer.classList.contains("hidden")) {
+                        InteractionsContainer.classList.remove("hidden");
+                    } else {
+                        InteractionsContainer.classList.add("hidden");
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>

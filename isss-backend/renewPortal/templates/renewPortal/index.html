@@ -1,0 +1,9 @@
+{% if stud_detail %}
+<ul>
+    {% for detail in stud_detail %}
+    <li>{{detail}}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No details found</p>
+{% endif %}
